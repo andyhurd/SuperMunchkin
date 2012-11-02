@@ -1,0 +1,85 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dip"
+	android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/playerNameTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/playerName"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="left" />
+
+        <TextView
+            android:id="@+id/gamesPlayedTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zero"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+
+        <TextView
+            android:id="@+id/gamesWonTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zero"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+
+        <TextView
+            android:id="@+id/winPercentageTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zeroPercent"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+
+        <TextView
+            android:id="@+id/totalLevelsTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zeroPercent"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+
+        <TextView
+            android:id="@+id/averageLevelTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zeroPercent"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+
+        <TextView
+            android:id="@+id/totalGearTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zeroPercent"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+
+        <TextView
+            android:id="@+id/averageGearTextView"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/zeroPercent"
+			android:textSize="18sp"
+			android:textColor="@android:color/white"
+			android:layout_gravity="right" />
+</LinearLayout>

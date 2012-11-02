@@ -1,0 +1,160 @@
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/playerNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playerName"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/playerStrengthTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:text="@string/one" />
+        
+	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center"
+	        android:layout_weight="1" >
+
+	        <Button
+	            android:id="@+id/previousPlayerButton"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="@string/previousPlayer"
+	            android:textSize="15sp"
+	            android:textColor="@color/mist"
+	        	style="?android:attr/borderlessButtonStyle"
+	        	android:layout_weight="1" />
+
+	        <Button
+	            android:id="@+id/nextPlayerButton"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="@string/nextPlayer"
+	            android:textSize="15sp"
+	            android:textColor="@color/mist"
+	        	style="?android:attr/borderlessButtonStyle"
+	        	layout_gravity="right"
+	        	android:layout_weight="1" />
+        
+	    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false" >
+            
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:layout_weight="1" >
+	            
+		        <TextView
+		            android:id="@+id/levelTextView"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/level"
+		            android:textSize="20sp"
+		            android:textStyle="bold"
+		            android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+            
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:layout_weight="1" >
+
+		        <TextView
+		            android:id="@+id/gearTextView"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/gear"
+		            android:textSize="20sp"
+		            android:textStyle="bold"
+		            android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+            
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:layout_weight="1" >
+
+		        <TextView
+		            android:id="@+id/warriorTextView"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/warrior"
+		            android:textSize="20sp"
+		            android:textStyle="bold"
+		            android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+
+		</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true" >
+            
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical"
+	            android:layout_weight="1"
+	            android:gravity="center" >
+		
+		        <NumberPicker
+		            android:id="@+id/levelNumberPicker"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content" />
+		    </LinearLayout>
+            
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical"
+	            android:layout_weight="1"
+	            android:gravity="center" >
+	
+		        <NumberPicker
+		            android:id="@+id/gearNumberPicker"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content" />
+		    </LinearLayout>
+            
+	        <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical"
+	            android:layout_weight="1"
+	            android:gravity="center" >
+	
+		        <CheckBox
+		            android:id="@+id/warriorCheckBox"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text=""
+		            android:scaleX="3"
+		            android:scaleY="3" />
+		    </LinearLayout>
+        
+        </LinearLayout>
+
+    </LinearLayout>

@@ -1,0 +1,42 @@
+package hurdad.supermunchkin;
+
+import java.util.ArrayList;
+
+import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class GameAdapter extends ArrayAdapter<Game> {
+	private int layoutResource;
+	
+	public GameAdapter(Context context, ArrayList<Game> games, int layoutResource) {
+		super(context, 0, games);
+		this.layoutResource = layoutResource;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		
+		View view = convertView;
+		
+		if (view == null) {
+			view = LayoutInflater.from(getContext()).inflate(this.layoutResource, null);
+		}
+		
+		// populate the View's widgets with player specific info
+		TextView playerNameTextView = (TextView) view.findViewById(R.id.playerNameTextView);
+		Game game = getItem(position);
+		String gameString = game.getStartDate() + ":";
+		for (PlayerGame playerGame : game.getPlayerGames()) {
+			gameString += " " + playerGame.getPlayer().getFirstName();
+		}
+		playerNameTextView.setText(gameString);
+		
+		return view;
+	}
+}

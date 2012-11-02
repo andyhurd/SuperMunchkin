@@ -1,0 +1,39 @@
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:layout_width="wrap_content"
+    	android:layout_height="30dip"
+    	android:orientation="horizontal"
+    	android:gravity="center"
+    	android:stretchColumns="0,1,2,3">
+
+        <TextView
+            android:id="@+id/playerNameTextView"
+            android:layout_height="wrap_content"
+            android:layout_span="3"
+            android:text="@string/playerName"
+			android:textSize="18sp"
+			android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/gamesPlayedTextView"
+            android:layout_height="wrap_content"
+            android:layout_span="1"
+            android:text="@string/zero"
+			android:textSize="18sp"
+			android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/gamesWonTextView"
+            android:layout_height="wrap_content"
+            android:layout_span="1"
+            android:text="@string/zero"
+			android:textSize="18sp"
+			android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/winPercentageTextView"
+            android:layout_height="wrap_content"
+            android:layout_span="1"
+            android:text="@string/zeroPercent"
+			android:textSize="18sp"
+			android:textColor="@android:color/white" />
+</TableRow>

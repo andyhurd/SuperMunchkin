@@ -1,0 +1,100 @@
+package hurdad.supermunchkin;
+
+import java.util.ArrayList;
+
+import android.os.Bundle;
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class GameStatisticsActivity extends ListActivity {
+	Game game;
+	Button doneButton;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_statistics);
+        
+        game = getIntent().getParcelableExtra("game");
+        
+        final PlayerStatAdapter adapter = new PlayerStatAdapter(this, game.getPlayerGames(), R.layout.player_stat_list_item);
+        setListAdapter(adapter);
+        
+
+        
+        doneButton = (Button) findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				GameStatisticsActivity.this.finish();
+			}
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_super_munchkin, menu);
+        return true;
+    }
+
+	public class PlayerStatAdapter extends ArrayAdapter<PlayerGame> {
+    	private int layoutResource;
+    	
+    	public PlayerStatAdapter(Context context, ArrayList<PlayerGame> playerGames, int layoutResource) {
+    		super(context, 0, playerGames);
+    		this.layoutResource = layoutResource;
+    	}
+        
+    	@Override
+    	public View getView(int position, View convertView, ViewGroup parent) {
+    		
+    		View view = convertView;
+    		
+    		if (view == null) {
+    			view = LayoutInflater.from(getContext()).inflate(this.layoutResource, null);
+    		}
+    		
+    		// populate the View's widgets with player specific name info
+    		TextView playerNameTextView = (TextView) view.findViewById(R.id.playerNameTextView);
+    		playerNameTextView.setText(getItem(position).getPlayer().getFirstName() + " " + getItem(position).getLastName());
+    		
+    		// populate the View's widgets with player specific games played
+    		TextView gamesPlayedTextView = (TextView) view.findViewById(R.id.gamesPlayedTextView);
+    		gamesPlayedTextView.setText("" + getItem(position).getPlayer().getGamesPlayed());
+    		
+    		// populate the View's widgets with player specific games won
+    		TextView gamesWonTextView = (TextView) view.findViewById(R.id.gamesWonTextView);
+    		gamesWonTextView.setText("" + getItem(position).getPlayer().getGamesWon());
+    		
+    		// populate the View's widgets with player specific win percentage
+    		TextView winPercentageTextView = (TextView) view.findViewById(R.id.winPercentageTextView);
+    		winPercentageTextView.setText(getItem(position).getPlayer().getWinPercentage() + "%");
+    		
+    		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        		
+        		// populate the View's widgets with player specific total levels
+        		TextView levelsTextView = (TextView) view.findViewById(R.id.totalLevelsTextView);
+        		totalLevelsTextView.setText(getItem(position).getPlayer().getTotalLevels());
+        		
+        		// populate the View's widgets with player specific total gear
+        		TextView gearTextView = (TextView) view.findViewById(R.id.totalGearTextView);
+        		totalGearTextView.setText(getItem(position).getPlayer().getTotalGear());
+        		
+        		// populate the View's widgets with player specific warrior status
+        		TextView totalGearTextView = (TextView) view.findViewById(R.id.warriorTextView);
+        		totalGearTextView.setText(getItem(position).getWarrior() ? "T" : "F");
+    		}
+    		
+    		return view;
+    	}
+    }
+}

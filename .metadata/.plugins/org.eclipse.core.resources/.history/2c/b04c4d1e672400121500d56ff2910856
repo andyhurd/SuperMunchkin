@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dip"
+    android:gravity="center_vertical"
+    android:background="@color/mist">
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text=""
+			android:textSize="18sp"
+			android:textColor="@color/charcoal"
+			android:gravity="left" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gamesPlayedAbbr"
+			android:textSize="18sp"
+			android:textColor="@color/charcoal"
+			android:gravity="right" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gamesWonAbbr"
+			android:textSize="18sp"
+			android:textColor="@color/charcoal"
+			android:gravity="right" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/winPercentageAbbr"
+			android:textSize="18sp"
+			android:textColor="@color/charcoal"
+			android:gravity="right" />
+</LinearLayout>

@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dip"
+	android:gravity="center_vertical"
+	android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/player"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="left" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gamesPlayedAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gamesWonAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/winPercentageAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/levelAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/averageLevelAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gearAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/averageGearAbbr"
+			android:textSize="14sp"
+			android:textColor="@color/charcoal"
+			android:gravity="center" />
+</LinearLayout>

@@ -1,0 +1,186 @@
+package hurdad.supermunchkin;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.text.format.Time;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class GameTrackerActivity extends Activity {
+	private Game game;
+	
+	private TextView playerNameTextView;
+	private TextView playerStrengthTextView;
+	private NumberPicker levelNumberPicker;
+	private NumberPicker gearNumberPicker;
+	private CheckBox warriorCheckBox;
+	
+	private Button nextPlayerButton;
+	private Button previousPlayerButton;
+	
+	private ArrayList<PlayerGame> playerGames;
+	private int currentPlayerIndex = 0;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game_tracker);
+        
+        // initialize game variables
+        game = new Game();
+        game.setStartDate(new Date());
+        game.setEnabled(true);
+
+        // initialize playerGameVariables
+        playerGames = new ArrayList<PlayerGame>();
+        ArrayList<Player> players = getIntent().getParcelableArrayListExtra("orderedPlayers");
+        for (Player player : players) {
+        	PlayerGame playerGame = new PlayerGame();
+        	playerGame.setGear(0);
+        	playerGame.setLevel(1);
+        	playerGame.setWarrior(false);
+        	playerGame.setPlayer(player);
+        	playerGame.setGame(game);
+        	playerGames.add(playerGame);
+        }
+        
+        // initialize game in database
+        createGameDatabaseRecord();
+        
+        // grab handles for view objects
+        playerNameTextView = (TextView) findViewById(R.id.playerNameTextView);
+        playerStrengthTextView = (TextView) findViewById(R.id.playerStrengthTextView);
+        levelNumberPicker = (NumberPicker) findViewById(R.id.levelNumberPicker);
+        gearNumberPicker = (NumberPicker) findViewById(R.id.gearNumberPicker);
+        warriorCheckBox = (CheckBox) findViewById(R.id.warriorCheckBox);
+        nextPlayerButton = (Button) findViewById(R.id.nextPlayerButton);
+        previousPlayerButton = (Button) findViewById(R.id.previousPlayerButton);
+        
+        nextPlayerButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+	        	displayNextPlayer();
+			}
+        });
+        previousPlayerButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+	        	displayPreviousPlayer();
+			}
+        });
+        
+        // place bounds on level number picker (only can be level 1-10)
+        levelNumberPicker.setMinValue(1);
+        levelNumberPicker.setMaxValue(10);
+        levelNumberPicker.setOnValueChangedListener(new OnValueChangeListener() {
+			public void onValueChange(NumberPicker levelNumberPicker, int oldVal,
+					int newVal) {
+				int level = levelNumberPicker.getValue();
+				int gear = gearNumberPicker.getValue();
+				playerStrengthTextView.setText("" + (level + gear));
+			}
+        });
+        
+        // place bounds on armor number picker (never seen over 30-ish
+        // in play, so 0-99 should be more than sufficient)
+        gearNumberPicker.setMinValue(0);
+        gearNumberPicker.setMaxValue(99);
+        gearNumberPicker.setOnValueChangedListener(new OnValueChangeListener() {
+			public void onValueChange(NumberPicker gearNumberPicker, int oldVal,
+					int newVal) {
+				int level = levelNumberPicker.getValue();
+				int gear = gearNumberPicker.getValue();
+				playerStrengthTextView.setText("" + (level + gear));
+			}
+        });
+        
+        // turn off circular number pick-ing
+        levelNumberPicker.setWrapSelectorWheel(false);
+        gearNumberPicker.setWrapSelectorWheel(false);
+        
+        this.displayPlayer();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_super_munchkin, menu);
+        return true;
+    }
+    
+    private void displayNextPlayer() {
+    	savePlayerState(currentPlayerIndex);
+    	if (playerGames.size() > 0) {
+	    	currentPlayerIndex = (currentPlayerIndex + 1) % playerGames.size();
+	    	displayPlayer();
+    	}
+    }
+    
+    private void displayPreviousPlayer() {
+    	savePlayerState(currentPlayerIndex);
+    	if (playerGames.size() > 0) {
+	    	currentPlayerIndex = (currentPlayerIndex - 1) % playerGames.size();
+	    	if (currentPlayerIndex < 0) {
+	    		currentPlayerIndex += playerGames.size();
+	    	}
+	    	displayPlayer();
+    	}
+    }
+    
+    private void displayPlayer() {
+    	if (playerGames.size() > 0) {
+        	int previousPlayerIndex = (currentPlayerIndex - 1) % playerGames.size();
+	    	if (previousPlayerIndex < 0) {
+	    		previousPlayerIndex += playerGames.size();
+	    	}
+        	int nextPlayerIndex = (currentPlayerIndex + 1) % playerGames.size();
+	    	if (nextPlayerIndex < 0) {
+	    		nextPlayerIndex += playerGames.size();
+	    	}
+        	
+            playerNameTextView.setText(playerGames.get(currentPlayerIndex).getPlayer().getFirstName() + " " + playerGames.get(currentPlayerIndex).getPlayer().getLastName());
+            playerStrengthTextView.setText((playerGames.get(currentPlayerIndex).getLevel() + playerGames.get(currentPlayerIndex).getGear()) + "");
+            levelNumberPicker.setValue(playerGames.get(currentPlayerIndex).getLevel());
+            gearNumberPicker.setValue(playerGames.get(currentPlayerIndex).getGear());
+            warriorCheckBox.setChecked(playerGames.get(currentPlayerIndex).getWarrior());
+            
+            previousPlayerButton.setText(playerGames.get(previousPlayerIndex).getPlayer().getFirstName());
+            nextPlayerButton.setText(playerGames.get(nextPlayerIndex).getPlayer().getFirstName());
+    	}
+    }
+    
+    private void savePlayerState(int index) {
+    	playerGames.get(index).setGear(gearNumberPicker.getValue());
+    	playerGames.get(index).setLevel(levelNumberPicker.getValue());
+    	playerGames.get(index).setWarrior(warriorCheckBox.isChecked());
+    	
+    	// update database entry for this playerGame
+    	Database db = Database.getDatabase(this);
+    	db.updatePlayerGame(playerGames.get(index));
+    }
+    
+    private void createGameDatabaseRecord() {
+        Database db = Database.getDatabase(this);
+        db.insertGame(game);
+        db.retrieveGameId(game);
+        
+        if (playerGames.size() > 0) {
+            for (PlayerGame playerGame : playerGames) {
+            	db.insertPlayerGame(playerGame);
+            	db.retrievePlayerGameId(playerGame);
+            }
+        }
+    }
+}

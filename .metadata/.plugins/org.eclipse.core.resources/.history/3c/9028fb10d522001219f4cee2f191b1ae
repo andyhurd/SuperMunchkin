@@ -1,0 +1,277 @@
+package hurdad.supermunchkin;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+public class Database {
+	
+	// database constants
+	private static final String DATABASE_NAME = "super_munchkin.db";
+	private static final int DATABASE_VERSION = 1;
+	
+	// player table constants
+	private static final String TABLE_PLAYER = "player";
+	private static final String COLUMN_PLAYER_ID = "player_id";
+	private static final String COLUMN_PLAYER_FIRST_NAME = "player_first_name";
+	private static final String COLUMN_PLAYER_LAST_NAME = "player_last_name";
+	private static final String COLUMN_PLAYER_ENABLED = "player_enabled";
+	
+	// game table constants
+	private static final String TABLE_GAME = "game";
+	private static final String COLUMN_GAME_ID = "game_id";
+	private static final String COLUMN_GAME_START_DATE = "game_start_date";
+	private static final String COLUMN_GAME_FINISH_DATE = "game_finish_date";
+	private static final String COLUMN_GAME_ENABLED = "game_enabled";
+	
+	// player_game table constants
+	private static final String TABLE_PLAYER_GAME = "player_game";
+	private static final String COLUMN_PLAYER_GAME_ID = "player_game_id";
+	private static final String COLUMN_PLAYER_GAME_PLAYER_ID = "player_game_player_id";
+	private static final String COLUMN_PLAYER_GAME_GAME_ID = "player_game_game_id";
+	private static final String COLUMN_PLAYER_GAME_LEVEL = "player_game_level";
+	private static final String COLUMN_PLAYER_GAME_GEAR = "player_game_gear";
+	private static final String COLUMN_PLAYER_GAME_WARRIOR = "player_game_warrior";
+	
+	// DDL scripts
+	private static final String TABLE_PLAYER_DDL =
+				"CREATE TABLE " + TABLE_PLAYER + " ( " +
+					COLUMN_PLAYER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+					COLUMN_PLAYER_FIRST_NAME + " TEXT NOT NULL, " +
+					COLUMN_PLAYER_LAST_NAME + " TEXT NOT NULL, " +
+					COLUMN_PLAYER_ENABLED + " INTEGER NOT NULL, " +
+					"CHECK(" + COLUMN_PLAYER_ENABLED + " = 0 " +
+							"OR " + COLUMN_PLAYER_ENABLED + " = 1));";
+	
+	private static final String TABLE_GAME_DDL =
+				"CREATE TABLE " + TABLE_GAME + " ( " +
+					COLUMN_GAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+					COLUMN_GAME_START_DATE + " TEXT NOT NULL, " +
+					COLUMN_GAME_FINISH_DATE + " TEXT, " +
+					COLUMN_GAME_ENABLED + " INTEGER NOT NULL, " +
+					"CHECK(" + COLUMN_GAME_ENABLED + " = 0 " +
+							"OR " + COLUMN_GAME_ENABLED + " = 1));";
+	
+	private static final String TABLE_PLAYER_GAME_DDL =
+				"CREATE TABLE " + TABLE_PLAYER_GAME + " ( " +
+					COLUMN_PLAYER_GAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+					COLUMN_PLAYER_GAME_PLAYER_ID + " INTEGER NOT NULL, " +
+					COLUMN_PLAYER_GAME_GAME_ID + " INTEGER NOT NULL, " +
+					COLUMN_PLAYER_GAME_LEVEL + " NUMERIC(2) NOT NULL, " +
+					COLUMN_PLAYER_GAME_GEAR + " NUMERIC(2) NOT NULL, " +
+					COLUMN_PLAYER_GAME_WARRIOR + " NUMERIC(1) NOT NULL, " +
+					"FOREIGN KEY(" + COLUMN_PLAYER_GAME_PLAYER_ID + ") REFERENCES " +
+						TABLE_PLAYER + "(" + COLUMN_PLAYER_ID + "), " +
+					"FOREIGN KEY(" + COLUMN_PLAYER_GAME_GAME_ID + ") REFERENCES " +
+						TABLE_GAME + "(" + COLUMN_GAME_ID + "), " +
+					"CHECK(" + COLUMN_PLAYER_GAME_LEVEL + " > 0 " +
+						"AND " + COLUMN_PLAYER_GAME_LEVEL + " <= 10 " +
+						"AND " + COLUMN_PLAYER_GAME_GEAR + " >= 0 " +
+						"AND " + COLUMN_PLAYER_GAME_GEAR + " <= 99 " +
+						"AND (" + COLUMN_PLAYER_GAME_WARRIOR + " = 0 " +
+							"OR " + COLUMN_PLAYER_GAME_WARRIOR + " = 1)));";
+	
+	private static final String RETRIEVE_UNFINISHED_PLAYER_GAMES =
+				"SELECT " +
+					COLUMN_GAME_ID + ", " +
+					COLUMN_GAME_START_DATE + ", " +
+					COLUMN_PLAYER_GAME_LEVEL + ", " +
+					COLUMN_PLAYER_GAME_GEAR + ", " +
+					COLUMN_PLAYER_GAME_WARRIOR + ", " +
+					COLUMN_PLAYER_ID + ", " +
+					COLUMN_PLAYER_FIRST_NAME + ", " +
+					COLUMN_PLAYER_LAST_NAME + " " +
+				"FROM " +
+					TABLE_GAME + " " +
+					"JOIN " + TABLE_PLAYER_GAME + " ON " + TABLE_PLAYER_GAME + "." +
+						COLUMN_PLAYER_GAME_GAME_ID + " = " + TABLE_GAME + "." + COLUMN_GAME_ID + " " +
+					"JOIN " + TABLE_PLAYER + " ON " + TABLE_PLAYER + "." + COLUMN_PLAYER_ID + " = " +
+						TABLE_PLAYER_GAME + "." + COLUMN_PLAYER_GAME_PLAYER_ID + " " +
+				"WHERE " +
+					COLUMN_GAME_ENABLED + " = 1";
+	
+	// singleton database
+	private static Database singleton = null;
+	private SQLiteDatabase database;
+	private DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private Database(Context context) {
+		OpenHelper openHelper = new OpenHelper(context);
+		this.database = openHelper.getWritableDatabase();
+	}
+	
+	public static Database getDatabase(Context context) {
+		if (singleton == null) {
+			singleton = new Database(context);
+		}
+			
+		return singleton;
+	}
+	
+	public void close() {
+		this.database.close();
+	}
+	
+	public ArrayList<Player> retrieveAllPlayers() {
+		return retrievePlayers(null);
+	}
+	
+	public ArrayList<Player> retrieveEnabledPlayers() {
+		return retrievePlayers(COLUMN_PLAYER_ENABLED + " = 1");
+	}
+	
+	public ArrayList<Player> retrievePlayers(String whereClause) {
+		ArrayList<Player> players = new ArrayList<Player>();
+		Player player;
+		
+		Cursor cursor = database.query(TABLE_PLAYER, new String[] {COLUMN_PLAYER_ID, COLUMN_PLAYER_FIRST_NAME,
+				COLUMN_PLAYER_LAST_NAME, COLUMN_PLAYER_ENABLED}, whereClause, null, null, null, COLUMN_PLAYER_FIRST_NAME);
+		while (cursor.moveToNext()) {
+			player = new Player();
+			player.setPlayerId(cursor.getInt(0));
+			player.setFirstName(cursor.getString(1));
+			player.setLastName(cursor.getString(2));
+			player.setEnabled(cursor.getInt(3) == 1 ? true : false);
+			players.add(player);
+		}
+		return players;
+	}
+	
+	public void insertPlayer(Player player) {
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_PLAYER_FIRST_NAME, player.getFirstName());
+		values.put(COLUMN_PLAYER_LAST_NAME, player.getLastName());
+		values.put(COLUMN_PLAYER_ENABLED, (player.getEnabled() ? 1 : 0));
+		database.insert(TABLE_PLAYER, null, values);
+	}
+	
+	public void retrieveGameId(Game game) {
+		Cursor cursor = database.query(TABLE_GAME, new String[] {COLUMN_GAME_ID}, COLUMN_GAME_START_DATE + " = '" +
+				iso8601Format.format(game.getStartDate()) + "'", null, null, null, null);
+		while (cursor.moveToNext()) {
+			game.setGameId(cursor.getInt(0));
+		}
+	}
+	
+	public void insertGame(Game game) {
+		String startDate = "";
+		String finishDate = "";
+		startDate = iso8601Format.format(game.getStartDate());
+		finishDate = iso8601Format.format(game.getFinishDate());
+		
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_GAME_START_DATE, startDate);
+		values.put(COLUMN_GAME_FINISH_DATE, finishDate);
+		values.put(COLUMN_GAME_ENABLED, (game.getEnabled() ? 1 : 0));
+		database.insert(TABLE_GAME, null, values);
+	}
+	
+	public void retrievePlayerGameId(PlayerGame playerGame) {
+		Cursor cursor = database.query(TABLE_PLAYER_GAME, new String[] {COLUMN_PLAYER_GAME_ID}, COLUMN_PLAYER_GAME_PLAYER_ID + " = " +
+				playerGame.getPlayer().getPlayerId() + " AND " + COLUMN_PLAYER_GAME_GAME_ID + " = " + playerGame.getGame().getGameId(),
+				null, null, null, null);
+		while (cursor.moveToNext()) {
+			playerGame.setPlayerGameId(cursor.getInt(0));
+			Log.d("RESULT OF PG QUERY", "" + playerGame.getPlayerGameId());
+		}
+	}
+	
+	public void insertPlayerGame(PlayerGame playerGame) {
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_PLAYER_GAME_PLAYER_ID, playerGame.getPlayer().getPlayerId());
+		values.put(COLUMN_PLAYER_GAME_GAME_ID, playerGame.getGame().getGameId());
+		values.put(COLUMN_PLAYER_GAME_LEVEL, playerGame.getLevel());
+		values.put(COLUMN_PLAYER_GAME_GEAR, playerGame.getLevel());
+		values.put(COLUMN_PLAYER_GAME_WARRIOR, (playerGame.getWarrior() ? 1 : 0));
+		database.insert(TABLE_PLAYER_GAME, null, values);
+	}
+	
+	public void updatePlayerGame(PlayerGame playerGame) {
+		Log.d("PG LEVEL", "" + playerGame.getLevel());
+		Log.d("PG GEAR", "" + playerGame.getGear());
+		Log.d("PG WAR", "" + (playerGame.getWarrior() ? 1 : 0));
+		Log.d("PG PID", "" + playerGame.getPlayerGameId());
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_PLAYER_GAME_LEVEL, playerGame.getLevel());
+		values.put(COLUMN_PLAYER_GAME_GEAR, playerGame.getGear());
+		values.put(COLUMN_PLAYER_GAME_WARRIOR, playerGame.getWarrior() ? 1 : 0);
+		database.update(TABLE_PLAYER_GAME, values, COLUMN_PLAYER_GAME_ID + " = " + playerGame.getPlayerGameId(), null);
+	}
+	
+	public ArrayList<Game> retrieveUnfinishedGames() {
+		ArrayList<Game> unfinishedGames = new ArrayList<Game>();
+		Cursor cursor = database.rawQuery(RETRIEVE_UNFINISHED_PLAYER_GAMES, null);
+		PlayerGame playerGame = new PlayerGame();
+		ArrayList<Integer> gameIds = new ArrayList<Integer>();
+		ArrayList<Integer> playerIds = new ArrayList<Integer>();
+		while (cursor.moveToNext()) {
+			playerGame.setPlayerGameId(cursor.getInt(0));
+		}
+		int gameId;
+		int playerId;
+		while (cursor.moveToNext()) {
+			gameIdIndex = cursor.getInt(0));
+			if (gameIndex == -1) {
+				
+			}
+			player
+			player = new Player();
+			player.setPlayerId(cursor.getInt(0));
+			player.setFirstName(cursor.getString(1));
+			player.setLastName(cursor.getString(2));
+			player.setEnabled(cursor.getInt(3) == 1 ? true : false);
+			players.add(player);
+		}
+		Game game = new Game();
+		game.setStartDate(new Date());
+		game.setPlayerGames(new ArrayList<PlayerGame>());
+		game.getPlayerGames().add(new PlayerGame());
+		game.getPlayerGames().get(0).setPlayer(new Player());
+		game.getPlayerGames().get(0).getPlayer().setFirstName("Ken");
+		game.getPlayerGames().add(new PlayerGame());
+		game.getPlayerGames().get(1).setPlayer(new Player());
+		game.getPlayerGames().get(1).getPlayer().setFirstName("Paul");
+		game.getPlayerGames().add(new PlayerGame());
+		game.getPlayerGames().get(2).setPlayer(new Player());
+		game.getPlayerGames().get(2).getPlayer().setFirstName("Bob");
+		game.getPlayerGames().add(new PlayerGame());
+		game.getPlayerGames().get(3).setPlayer(new Player());
+		game.getPlayerGames().get(3).getPlayer().setFirstName("Tom");
+		unfinishedGames.add(game);
+		return unfinishedGames;
+	}
+	
+	public void deletePlayer(Player player) {
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_PLAYER_ENABLED, 0);
+		database.update(TABLE_PLAYER, values, COLUMN_PLAYER_ID + " = " + player.getPlayerId(), null);
+	}
+	
+	class OpenHelper extends SQLiteOpenHelper {
+
+		public OpenHelper(Context context) {
+			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			db.execSQL(TABLE_PLAYER_DDL);
+			Log.d("FOO", TABLE_GAME_DDL);
+			db.execSQL(TABLE_GAME_DDL);
+			db.execSQL(TABLE_PLAYER_GAME_DDL);
+		}
+
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+		
+	}
+
+}

@@ -1,0 +1,35 @@
+package hurdad.supermunchkin;
+
+import java.util.Date;
+
+import android.text.format.Time;
+
+public class Game {
+	private int gameId;
+	private Time startTime;
+	private Time finishTime;
+	
+	public int getGameId() {
+		return gameId;
+	}
+	
+	public void setGameId(int gameId) {
+		this.gameId = gameId;
+	}
+	
+	public Time getStartTime() {
+		return startTime;
+	}
+	
+	public void setStartTIme(Time startTime) {
+		this.startTime = startTime;
+	}
+	
+	public Time getFinishTime() {
+		return finishTime;
+	}
+	
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
+	}
+}

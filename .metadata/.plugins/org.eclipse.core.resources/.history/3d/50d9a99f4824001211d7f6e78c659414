@@ -1,0 +1,80 @@
+package hurdad.supermunchkin;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+
+public class MainMenuActivity extends Activity {
+	private Button newGameButton;
+	private Button resumeGameButton;
+	private Button statisticsButton;
+	private final int CHOOSE_NEW_GAME_PLAYERS = 1;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_menu);
+        
+        // gain access to view buttons
+        newGameButton = (Button) findViewById(R.id.newGameButton);
+        resumeGameButton = (Button) findViewById(R.id.resumeGameButton);
+        statisticsButton = (Button) findViewById(R.id.statisticsButton);
+        
+        // add click handler for new game button
+        newGameButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				Intent intent = new Intent(MainMenuActivity.this, ChoosePlayersActivity.class);
+				startActivityForResult(intent, CHOOSE_NEW_GAME_PLAYERS);
+			}
+        	
+        });
+        
+        // add click handler for resume game button
+        resumeGameButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				Toast.makeText(MainMenuActivity.this, "Resume Game", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(MainMenuActivity.this, ChooseUnfinishedGameActivity.class);
+				startActivity(intent);
+			}
+        	
+        });
+        
+        // add click handler for statistics game button
+        statisticsButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+
+				Intent intent = new Intent(MainMenuActivity.this, StatisticsActivity.class);
+				startActivity(intent);
+			}
+        	
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_super_munchkin, menu);
+        return true;
+    }
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == CHOOSE_NEW_GAME_PLAYERS) {
+			if (resultCode == Activity.RESULT_OK){
+				Intent intent = new Intent(this, GameTrackerActivity.class);
+				intent.putExtra("callingActivity", data.getStringExtra("callingActivity"));
+				intent.putParcelableArrayListExtra("orderedPlayers", data.getParcelableArrayListExtra("orderedPlayers"));
+				startActivity(intent);
+			}
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+	}
+}
