@@ -197,6 +197,10 @@ public class Database {
 		return retrievePlayers(COLUMN_PLAYER_ENABLED + " = 1");
 	}
 	
+	public ArrayList<Player> retrieveDeletedPlayers() {
+		return retrievePlayers(COLUMN_PLAYER_ENABLED + " = 0");
+	}
+	
 	public ArrayList<Player> retrievePlayers(String whereClause) {
 		ArrayList<Player> players = new ArrayList<Player>();
 		Player player;
@@ -346,6 +350,12 @@ public class Database {
 	public void deletePlayer(Player player) {
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_PLAYER_ENABLED, 0);
+		database.update(TABLE_PLAYER, values, COLUMN_PLAYER_ID + " = " + player.getPlayerId(), null);
+	}
+	
+	public void enablePlayer(Player player) {
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_PLAYER_ENABLED, 1);
 		database.update(TABLE_PLAYER, values, COLUMN_PLAYER_ID + " = " + player.getPlayerId(), null);
 	}
 	

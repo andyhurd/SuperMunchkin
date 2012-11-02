@@ -28,6 +28,10 @@
     <string name="plus_sign">+</string>
     <string name="previousPlayer">Previous Player</string>
     <string name="reorder">Reorder</string>
+    <string name="removePlayers">Remove Players</string>
+    <string name="remove">Remove</string>
+    <string name="restorePlayers">Restore Players</string>
+    <string name="restore">Restore</string>
     <string name="resume_game">Resume Game</string>
     <string name="unfinished_game">Unfinished Game</string>
     <string name="save">Save</string>

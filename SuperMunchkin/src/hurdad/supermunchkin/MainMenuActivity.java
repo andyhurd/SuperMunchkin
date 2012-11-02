@@ -12,6 +12,8 @@ public class MainMenuActivity extends Activity {
 	private Button newGameButton;
 	private Button resumeGameButton;
 	private Button statisticsButton;
+	private Button removePlayersButton;
+	private Button restorePlayersButton;
 	private final int CHOOSE_NEW_GAME_PLAYERS = 1;
 	private final int CHOOSE_UNFINISHED_GAME = 2;
 
@@ -24,6 +26,8 @@ public class MainMenuActivity extends Activity {
         newGameButton = (Button) findViewById(R.id.newGameButton);
         resumeGameButton = (Button) findViewById(R.id.resumeGameButton);
         statisticsButton = (Button) findViewById(R.id.statisticsButton);
+        removePlayersButton = (Button) findViewById(R.id.removePlayersButton);
+        restorePlayersButton = (Button) findViewById(R.id.restorePlayersButton);
         
         // add click handler for new game button
         newGameButton.setOnClickListener(new OnClickListener() {
@@ -45,12 +49,34 @@ public class MainMenuActivity extends Activity {
         	
         });
         
-        // add click handler for statistics game button
+        // add click handler for statistics button
         statisticsButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 
 				Intent intent = new Intent(MainMenuActivity.this, StatisticsActivity.class);
+				startActivity(intent);
+			}
+        	
+        });
+        
+        // add click handler for remove players button
+        removePlayersButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+
+				Intent intent = new Intent(MainMenuActivity.this, RemovePlayersActivity.class);
+				startActivity(intent);
+			}
+        	
+        });
+        
+        // add click handler for restore players button
+        restorePlayersButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+
+				Intent intent = new Intent(MainMenuActivity.this, RestorePlayersActivity.class);
 				startActivity(intent);
 			}
         	

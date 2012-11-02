@@ -42,6 +42,26 @@
 		        android:textSize="25dip"
 		        android:gravity="left"
 		        style="?android:attr/borderlessButtonStyle" />
+	
+	        <Button
+	            android:id="@+id/removePlayersButton"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="@string/removePlayers"
+		        android:textColor="@android:color/black"
+		        android:textSize="25dip"
+		        android:gravity="left"
+		        style="?android:attr/borderlessButtonStyle" />
+	
+	        <Button
+	            android:id="@+id/restorePlayersButton"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="@string/restorePlayers"
+		        android:textColor="@android:color/black"
+		        android:textSize="25dip"
+		        android:gravity="left"
+		        style="?android:attr/borderlessButtonStyle" />
         </LinearLayout>
 
     </LinearLayout>

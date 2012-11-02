@@ -25,6 +25,14 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name=".RemovePlayersActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".RestorePlayersActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name=".OrderPlayersActivity"
             android:label="@string/app_name" >
         </activity>

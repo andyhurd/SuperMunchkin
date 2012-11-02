@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,14 +38,10 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
 		TextView playerNameTextView = (TextView) view.findViewById(R.id.playerNameTextView);
 		playerNameTextView.setText(getItem(position).getFirstName() + " " + getItem(position).getLastName());
 		
-		Log.d("FOO", "FOO");
 		if (selectedPlayers != null) {
-			Log.d("FOOD", "FOOD");
 			if (selectedPlayers.contains(getItem(position))) {
-				Log.d("FOOD", "VERY FOOD");
 				playerNameTextView.setTextColor(Color.BLACK);
 			} else {
-				Log.d("FOOR", "LESSER FOOD");
 				playerNameTextView.setTextColor(getContext().getResources().getColor(R.color.mist));
 			}
 		}
