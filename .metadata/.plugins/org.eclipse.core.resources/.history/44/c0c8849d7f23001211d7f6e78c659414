@@ -1,5 +1,0 @@
-package hurdad.supermunchkin;
-
-public class PlayerGameArrayList implements Parcelable {
-
-}

@@ -1,4 +1,0 @@
-INDEX VERSION 1.126+/home/andy/Documents/school/courses/2012-13fall/cs/491/SuperMunchkin/.metadata/.plugins/org.eclipse.jdt.core
-1684652208.index
-299516605.index
-1927968009.index

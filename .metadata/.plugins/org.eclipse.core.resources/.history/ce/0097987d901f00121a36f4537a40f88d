@@ -1,7 +1,0 @@
-package hurdad.supermunchkin;
-
-import android.widget.HorizontalScrollView;
-
-public class GameTrackerView extends HorizontalScrollView {
-
-}
